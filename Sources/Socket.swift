@@ -23,7 +23,8 @@
 // SOFTWARE.
 
 import CZeroMQ
-import Core
+import Reflection
+import Foundation
 
 public struct SendMode : OptionSet {
     public let rawValue: Int
@@ -44,6 +45,7 @@ public struct ReceiveMode : OptionSet {
     }
 
     public static let DontWait = ReceiveMode(rawValue: Int(ZMQ_DONTWAIT))
+    public static let ReceiveMore = ReceiveMode(rawValue: Int(ZMQ_RCVMORE))
 }
 
 public final class Socket {
@@ -696,13 +698,15 @@ extension SecurityMechanism {
 
 extension Socket {
     public func sendString(_ string: String, mode: SendMode = []) throws -> Bool {
-        return try send(Data(string), mode: mode)
+        guard let data = string.data(using: .unicode) else { return false }
+        return try send(data, mode: mode)
     }
 
     public func receiveString(_ mode: ReceiveMode = []) throws -> String? {
         guard let buffer = try receive(mode: mode) else {
             return nil
         }
-        return try? String(data: buffer)
+        
+        return String(data: buffer, encoding: .unicode)
     }
 }

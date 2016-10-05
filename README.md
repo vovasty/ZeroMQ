@@ -25,10 +25,10 @@ import ZeroMQ
 
 let context = try Context()
 
-let inbound = try context.socket(.Pull)
+let inbound = try context.socket(.pull)
 try inbound.bind("tcp://127.0.0.1:5555")
 
-let outbound = try context.socket(.Push)
+let outbound = try context.socket(.push)
 try outbound.connect("tcp://127.0.0.1:5555")
 
 try outbound.sendString("Hello World!")
@@ -54,7 +54,7 @@ import PackageDescription
 
 let package = Package(
     dependencies: [
-        .Package(url: "https://github.com/Zewo/ZeroMQ.git", majorVersion: 0, minor: 5),
+        .Package(url: "https://github.com/Zewo/ZeroMQ.git", majorVersion: 0, minor: 14),
     ]
 )
 ```
